@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Production build output
+dist/
+
+# Environment files (keep example tracked)
+.env
+.env.*
+!.env.example
+
+# Service account keys and Google credentials
+*service-account*.json
+*service_account*.json
+serviceAccountKey*.json
+*-key.json
+*credentials*.json
+
+# Firebase CLI cache & logs
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+
+# System & editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
