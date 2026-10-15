@@ -1,0 +1,75 @@
+rules_version = '2';
+
+/**
+ * SECURITY ARCHITECTURE & AUTHENTICATION TRADE-OFF:
+ * Currently, this application operates without user authentication (Firebase Auth).
+ * 
+ * Trade-off:
+ * - Public Read Access: Allows the dealer dashboard to function as an open MIS interface without login barriers.
+ * - Public Create Access: Allows leads from web forms, voice agents, WhatsApp, and walk-ins to be recorded directly.
+ * - Risk & Mitigation: Anyone can read and submit leads. To mitigate malicious payloads, strict schema validation
+ *   is enforced below (exact 8 keys, regex validation for mobile & pincode, status locked to 'New').
+ * - Updates are strictly locked down so only the 'status' field can be modified to allowed enum values.
+ * - Deletes are completely disabled.
+ * 
+ * Next Step for Production:
+ * Implement Firebase Authentication with Role-Based Access Control (RBAC). Only authenticated MIS / Sales
+ * users would be permitted to read leads and update statuses, while write access for lead creation would be
+ * restricted to authenticated backend webhooks / API services.
+ */
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================================
+    // Dealers Collection: Read-only reference directory for pincode routing
+    // =========================================================================
+    match /dealers/{dealerId} {
+      // Allow any client to read dealer directory to resolve pincodes locally
+      allow read: if true;
+
+      // Disallow all client-side writes; dealers can only be updated via backend / admin script
+      allow write: if false;
+    }
+
+    // =========================================================================
+    // Leads Collection: Strict schema enforcement with normalized mobile doc ID
+    // =========================================================================
+    match /leads/{mobile} {
+      // Allow dashboard to read and stream leads live
+      allow read: if true;
+
+      // Disallow deleting leads to maintain audit trail
+      allow delete: if false;
+
+      // Validate creation of new lead documents
+      allow create: if
+        // 1. Mobile in payload must match the document ID exactly
+        request.resource.data.mobile == mobile &&
+        // 2. Mobile must be exactly 10 digits
+        mobile.matches('^[0-9]{10}$') &&
+        // 3. Pincode must be exactly 6 digits
+        request.resource.data.pincode.matches('^[0-9]{6}$') &&
+        // 4. Initial status must always be 'New'
+        request.resource.data.status == 'New' &&
+        // 5. Customer name must be a non-empty string
+        request.resource.data.name is string &&
+        request.resource.data.name.size() > 0 &&
+        // 6. Schema check: The document must contain all 8 required keys
+        request.resource.data.keys().hasAll([
+          'name', 'mobile', 'pincode', 'product', 'source', 'dealer', 'status', 'createdAt'
+        ]) &&
+        // 7. Schema check: The document must NOT contain any additional/unexpected keys
+        request.resource.data.keys().hasOnly([
+          'name', 'mobile', 'pincode', 'product', 'source', 'dealer', 'status', 'createdAt'
+        ]);
+
+      // Validate updates to existing leads
+      allow update: if
+        // 1. Only the 'status' field is permitted to change; all other fields are immutable
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']) &&
+        // 2. The new status value must belong to the 4 canonical business statuses
+        request.resource.data.status in ['New', 'Contacted', 'Converted', 'Lost'];
+    }
+  }
+}
