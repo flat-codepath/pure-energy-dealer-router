@@ -1,0 +1,41 @@
+lead_id,action,reason
+L1001,imported,clean record; all fields valid
+L1002,imported,clean record; all fields valid
+L1003,imported,clean record; all fields valid
+L1004,fixed,phone normalized
+L1005,imported,clean record; all fields valid
+L1006,fixed,phone normalized
+L1007,imported,clean record; all fields valid
+L1008,imported,clean record; all fields valid
+L1009,rejected,invalid phone: 12345
+L1010,imported,clean record; all fields valid
+L1011,imported,clean record; all fields valid
+L1012,rejected,invalid pincode: 5000
+L1013,imported,clean record; all fields valid
+L1014,imported,clean record; all fields valid
+L1015,assigned_inhouse,"no dealer for prefix 110, routed to In-house Sales"
+L1016,imported,clean record; all fields valid
+L1017,imported,clean record; all fields valid
+L1018,rejected,unparseable date: 31/09/2026
+L1019,imported,clean record; all fields valid
+L1020,fixed,status standardized
+L1021,imported,clean record; all fields valid
+L1022,imported,clean record; all fields valid
+L1023,fixed,product standardized
+L1024,imported,clean record; all fields valid
+L1025,imported,clean record; all fields valid
+L1026,rejected,blank name
+L1027,imported,clean record; all fields valid
+L1028,fixed,source standardized
+L1029,imported,clean record; all fields valid
+L1030,imported,clean record; all fields valid
+L1031,imported,clean record; all fields valid
+L1032,imported,clean record; all fields valid
+L1033,imported,clean record; all fields valid
+L1034,imported,clean record; all fields valid
+L1035,imported,clean record; all fields valid
+L1036,merged,"duplicate of L1003, kept earlier record"
+L1037,merged,"duplicate of L1010, kept earlier record"
+L1038,merged,"duplicate of L1031, kept earlier record"
+L1039,merged,"duplicate of L1007, kept earlier record"
+L1033,merged,"duplicate of L1013, kept earlier record"
