@@ -8,7 +8,6 @@ def seed_dealers():
     """
     Seeds the 'dealers' Firestore collection from data/dealers.csv.
     Uses the GOOGLE_APPLICATION_CREDENTIALS environment variable.
-    Idempotent: Uses dealer_id as the document ID, so it is safe to re-run.
     """
     # 1. Verify GOOGLE_APPLICATION_CREDENTIALS is set
     cred_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
