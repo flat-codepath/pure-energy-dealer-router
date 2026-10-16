@@ -38,10 +38,11 @@ I also asked for dry-run by default, a --commit flag, and a self-check that the 
      
 - **How I fixed it:** 
    -`scripts/clean_and_import.py`, updated `canonical_choice` to check for capacity keywords (`"5kwh"`) when standardizing product strings rather than expecting the word 
-   -Replaced the Unicode checkmarks with ASCII `[OK]` markers in `main()`.
+   - Replaced the Unicode checkmarks with ASCII `[OK]` markers in `main()`.
+
 - **What I took from it:** 
-    -Real-world legacy data often omits brand sub-names like 'Home', so catalog matching needs capacity-based fallback rules."
-    -
+    - Real-world legacy data often omits brand sub-names like 'Home', so catalog matching needs capacity-based fallback rules.
+    - Always stick to standard ASCII characters for CLI output on Windows to avoid cp1252 terminal encoding crashes.
 
 ## Notes
 
